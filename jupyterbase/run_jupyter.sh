@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/bin/sh
 
-/usr/sbin/sshd
+/usr/sbin/sshd 
 jupyter notebook "$@"
