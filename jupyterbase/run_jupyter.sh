@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
-service ssh start
+/usr/sbin/sshd
 jupyter notebook "$@"
