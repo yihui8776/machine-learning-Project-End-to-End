@@ -12,6 +12,7 @@ RUN apk add --no-cache  gcc openssl-dev openssl libressl libc-dev linux-headers 
 
 #jupyter
 RUN pip3 install jupyter  && ln -s /usr/local/python37/bin/jupyter /usr/bin/jupyter
+RUN pip install jupyter_contrib_nbextensions && jupyter contrib nbextension install --user
 
 # SSH Server
 # 安装openssh 并修改配置文件和生成key 并且同步时间
