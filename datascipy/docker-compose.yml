@@ -1,7 +1,7 @@
 version: '3'
 services:
   jupyter:
-    image: yihui8776/datascipy:v1.0
+    image: yihui8776/datascipy:v1.1
     container_name: mydatascipy
     ports:
       - "8888:8888"

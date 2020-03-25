@@ -53,10 +53,12 @@ RUN pip3 install -i https://pypi.douban.com/simple/ \
          --no-cache-dir  \
          -r /requirements.txt
 
+
 #clean cache
 RUN rm -rf /tmp/*  && \
-    rm -rf /var/cache/apk/*
-
+    rm -rf /var/cache/apk/* && \
+    rm -rf /scipy 
+    
 
 # 重新notebook配置
 COPY jupyter_notebook_config.py /root/.jupyter/
