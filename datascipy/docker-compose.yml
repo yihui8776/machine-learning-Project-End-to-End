@@ -1,0 +1,15 @@
+version: '3'
+services:
+  jupyter:
+    image: yihui8776/datascipy:v1.0
+    container_name: mydatascipy
+    ports:
+      - "8888:8888"
+    environment:
+      - PASSWORD=ai1234
+    volumes:
+      - "./notebooks:/notebooks"
+    command:
+      - "/run_jupyter.sh"
+      - "--allow-root"
+
