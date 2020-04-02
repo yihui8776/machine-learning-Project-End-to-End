@@ -1,0 +1,84 @@
+apiVersion: v1   #版本号，根据kubernets版本和资源类型选择
+kind: Service   #指定创建资源的角色/类型  这里是service
+metadata:  #资源的元数据/属性
+  name: spark-master #资源的名字，在同一个namespace中必须唯一
+spec:      #资源定义的内容
+  selector:   #将具有指定label标签的pod作为管理范围，与deployment对应
+    app: spark-master   #应用spark-master适用
+  ports:          #需要暴露的端口库号列表
+  - name: web-ui       #端口号名称
+    protocol: TCP      #协议类型
+    port: 8080         #web服务端口号，service暴露在cluster ip上的端口，通过<cluster ip>:port可以访问此服务,主要面向k8s内
+    targetPort: 8080   #Pod的外部访问端口，port和nodePort的数据通过这个端口进入到Pod内部，Pod里面的containers的端口映射到这个端口，提供服务
+    #nodePort: 8081    #Node节点的端口(范围：20000-40000)，<nodeIP>:nodePort 是提供给集群外部客户访问service的入口，面向外部，我们从网页访问也是用这端口
+  - name: master   #master主通信端口
+    protocol: TCP
+    port: 7077      #和worker互相通信的端口
+    targetPort: 7077
+  - name: master-rest   #master的restful风格的http请求接口
+    protocol: TCP 
+    port: 6066     #和worker通信端口
+    targetPort: 6066
+  - name: jupyter 
+    protocol: TCP
+    port: 8889
+    targetPort: 8888
+  #cluterIP: None
+  type: NodePort
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: spark-client    #客户端服务
+spec:
+  selector:
+    app: spark-client
+  clusterIP: None
+---
+apiVersion: apps/v1
+kind: Deployment       #资源类型为deployment，集群管理的控制，面向无状态应用
+metadata:
+  name: spark-master   #资源元数据
+  labels:
+    app: spark-master   #标签
+spec:
+  selector:
+    matchLabels:
+      app: spark-master  #和service的selector对应
+  template:             #就是对pod对象的定义
+    metadata:
+      labels:
+        app: spark-master
+    spec:
+      containers:     #Pod里的容器
+      - name: spark-master    #容器名
+        image: yihui8776/sparkmaster:v0.1   #镜像
+        imagePullPolicy: Always   #总是拉取镜像
+        ports:                    #容器开放的端口
+        - containerPort: 8080    
+        - containerPort: 7077
+        - containerPort: 6066
+        - containerPort: 8888
+---
+apiVersion: apps/v1
+kind: DaemonSet  #DaemonSet控制器，确保全部（或者一些）Node 上运行一个 Pod 的副本,集群运行可以使用，比如让每个节点运行ceph、nfs等。
+metadata:
+  name: spark-worker  #每个node都要有worker运行
+  labels:
+    app: spark-worker   #应用名
+spec:
+  selector:     #有spark-worker标签的pod作为管理范围
+    matchLabels:
+      name: spark-worker 
+  template:        #定义Pod对象
+    metadata:
+      labels:
+        name: spark-worker
+    spec:
+      containers:    #Pod里的容器
+      - name: spark-worker   #容器名
+        image: yihui8776/sparkworker:v0.1  #使用镜像
+        imagePullPolicy: Always     #总是拉取镜像
+        ports:
+        - containerPort: 8080      #容器开放的端口
+
