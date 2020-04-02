@@ -1,0 +1,15 @@
+version: '3'
+services:
+  jupyter:
+    image: yihui8776/sparkbase:v0.7
+    container_name: myspark
+    ports:
+      - "8887:8888"
+    environment:
+      - PASSWORD=ai1234
+    volumes:
+      - "./notebooks:/notebooks"
+    command:
+      - "/run_jupyter.sh"
+      - "--allow-root"
+
