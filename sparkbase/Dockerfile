@@ -121,6 +121,7 @@ RUN cd /
 
 RUN pip3 --no-cache-dir install toree==0.2.0 -i  https://pypi.douban.com/simple/ 
 RUN jupyter toree install --interpreters=Scala --spark_home=$SPARK_HOME --user --kernel_name=apache_toree --interpreters=PySpark,SparkR,Scala,SQL
+RUN pip3 --no-cache-dir install mmlspark
 
 #clean cache
 RUN rm -rf /tmp/*  && \

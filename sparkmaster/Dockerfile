@@ -1,4 +1,4 @@
-FROM yihui8776/sparkbase:v1.0
+FROM yihui8776/sparkbase:v1.1
 
 LABEL maintainer="yihui  <wangyaohui8776@sina.com>"
 
