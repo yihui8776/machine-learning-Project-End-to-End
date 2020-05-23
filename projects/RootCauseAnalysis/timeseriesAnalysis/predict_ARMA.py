@@ -178,7 +178,7 @@ def predict_data(model_arma, ts, log_n, start, end, rule1=True, rule2=True):
     predict_ts = model_arma.predict(start=start, end=end)  # 预测未来指定时间项的数据
     print ('-----------predict data----------')  # 打印标题
     if not (rule1 and rule2):  # 如果两个条件有任意一个不满足
-        predict_ts = recover_log(predict_ts, log_n)  # 还原数据
+        predict_ts = rev_log(predict_ts, log_n)  # 还原数据
     print (predict_ts)  # 展示预测数据
     # 展示预测趋势
     plt.figure()  # 创建画布
@@ -187,7 +187,33 @@ def predict_data(model_arma, ts, log_n, start, end, rule1=True, rule2=True):
     plt.legend(loc='best')  # 设置图例位置
     plt.title('predicted time series')  # 设置标题
     plt.show()  # 展示图像
+    return predict_ts
 
-
+#预测未来指定个数数据
+def forecast_data(model_arma, ts, log_n, forecast_num = 1 ,rule1=True, rule2=True):
+    '''
+    :param model_arma: 最优ARMA模型对象
+    :param ts: 时间序列数据，Series类型
+    :param log_n: 平稳性处理的log的次数，int型
+    :param forecast_num: 预测未来多少数据
+    :param rule1: rule1规则布尔值，布尔型
+    :param rule2: rule2规则布尔值，布尔型
+    :return: 无
+    '''
+    predict_ts = model_arma.forecast(forecast_num)[0]  # 预测未来指定时间项的数据
+    
+    print ('-----------predict data----------')  # 打印标题
+    if not (rule1 and rule2):  # 如果两个条件有任意一个不满足
+        predict_ts = rev_log(predict_ts, log_n)  # 还原数据
+    print (predict_ts)  # 展示预测数据
+    predict_ts=pd.Series(predict_ts)
+    # 展示预测趋势
+    plt.figure()  # 创建画布
+    ts.plot(label='raw time series')  # 设置推向标签
+    predict_ts.plot(label='predicted data', style='--')  # 以虚线展示预测数据
+    plt.legend(loc='best')  # 设置图例位置
+    plt.title('predicted time series')  # 设置标题
+    plt.show()  # 展示图像
+    return predict_ts
 
             
